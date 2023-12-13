@@ -1,0 +1,14 @@
+{
+    "name": "node-red-project",
+    "description": "A Node-RED Project",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "node-red-contrib-browser-utils": "~0.0.11",
+        "node-red-contrib-remote": "~1.5.1",
+        "node-red-contrib-speech-to-text-ubos": "~1.0.2",
+        "node-red-dashboard": "~3.6.1",
+        "node-red-node-ui-microphone": "~0.3.1",
+        "node-red-node-ui-table": "~0.4.3"
+    }
+}

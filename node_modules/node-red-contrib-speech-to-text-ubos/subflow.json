@@ -1,0 +1,198 @@
+{
+	"id": "70c990f5226211c0",
+	"type": "subflow",
+	"name": "Speech to text",
+	"info": "## Properties\n Only whisper-1 is currently available.\n\n - **[Required]** `msg.OPENAI_API_KEY`: This is the API key provided by OpenAI. It is necessary for authentication when making requests to the OpenAI API.\n\n1. When `msg.type` is set to `transcriptions`:\n    - **[Required]** `msg.file`: The audio file object (not file name) to transcribe, in one of these formats ***mp3***, ***mp4***, ***,mpeg***, ***mpga***, ***m4a***, ***wav***, or ***webm***. For example\n   ```js\n    msg.file = {\n        \"value\": msg.req.files[0].buffer,\n        \"options\": {\n            \"filename\": msg.req.files[0].originalname\n        }\n    };\n   ```\n    - `msg.prompt`: An optional text to guide the model's style or continue a previous audio segment. The [prompt](https://platform.openai.com/docs/guides/speech-to-text/prompting) should match the audio language.\n\n    - `msg.response_format`: The format of the transcript output, in one of these options: ***json***, ***text***, ***srt***, ***verbose_json***, or ***vtt***.\n    - `msg.temperature`: The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use [log probability](https://en.wikipedia.org/wiki/Log_probability) to automatically increase the temperature until certain thresholds are hit.\n    - `msg.language`: The language of the input audio. Supplying the input language in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format will improve accuracy and latency.\n\n2. When `msg.type` is set to `translations`:\n    - **[Required]** `msg.file`: The audio file object (not file name) to transcribe, in one of these formats ***mp3***, ***mp4***, ***,mpeg***, ***mpga***, ***m4a***, ***wav***, or ***webm***. For example\n   ```js\n    msg.file = {\n        \"value\": msg.req.files[0].buffer,\n        \"options\": {\n            \"filename\": msg.req.files[0].originalname\n        }\n    };\n   ```\n    - `msg.prompt`: An optional text to guide the model's style or continue a previous audio segment. The [prompt](https://platform.openai.com/docs/guides/speech-to-text/prompting) should match the audio language.\n\n    - `msg.response_format`: The format of the transcript output, in one of these options: ***json***, ***text***, ***srt***, ***verbose_json***, or ***vtt***.\n    - `msg.temperature`: The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use [log probability](https://en.wikipedia.org/wiki/Log_probability) to automatically increase the temperature until certain thresholds are hit.\n",
+	"category": "",
+	"in": [
+		{
+			"x": 200,
+			"y": 160,
+			"wires": [
+				{
+					"id": "83490fe977b3b046"
+				}
+			]
+		}
+	],
+	"out": [
+		{
+			"x": 620,
+			"y": 200,
+			"wires": [
+				{
+					"id": "83490fe977b3b046",
+					"port": 1
+				},
+				{
+					"id": "98bd7701e736895c",
+					"port": 0
+				}
+			]
+		}
+	],
+	"env": [
+		{
+			"name": "OPENAI_API_KEY",
+			"type": "cred",
+			"ui": {
+				"icon": "font-awesome/fa-sign-out",
+				"label": {
+					"en-US": "OpenAI Key"
+				},
+				"type": "input",
+				"opts": {
+					"types": [
+						"cred"
+					]
+				}
+			}
+		},
+		{
+			"name": "prompt",
+			"type": "str",
+			"value": "",
+			"ui": {
+				"icon": "font-awesome/fa-sign-out",
+				"label": {
+					"en-US": "Prompt"
+				},
+				"type": "input",
+				"opts": {
+					"types": [
+						"str"
+					]
+				}
+			}
+		},
+		{
+			"name": "actionType",
+			"type": "str",
+			"value": "transcriptions",
+			"ui": {
+				"icon": "font-awesome/fa-sign-out",
+				"label": {
+					"en-US": "Type"
+				},
+				"type": "select",
+				"opts": {
+					"opts": [
+						{
+							"l": {
+								"en-US": "translations"
+							},
+							"v": "translations"
+						},
+						{
+							"l": {
+								"en-US": "transcriptions"
+							},
+							"v": "transcriptions"
+						}
+					]
+				}
+			}
+		}
+	],
+	"meta": {
+		"module": "node-red-contrib-speech-to-text-ubos",
+		"type": "speech-to-text-ubos",
+		"version": "1.0.0",
+		"author": "vovajr11",
+		"desc": "Descr",
+		"keywords": "node-red",
+		"license": "MIT"
+	},
+	"credentials": {
+		"OPENAI_API_KEY": ""
+	},
+	"color": "#74AA9C",
+	"status": {
+		"x": 440,
+		"y": 240,
+		"wires": [
+			{
+				"id": "d6b1390ae936e28f",
+				"port": 0
+			}
+		]
+	},
+	"flow": [
+		{
+			"id": "83490fe977b3b046",
+			"type": "function",
+			"z": "70c990f5226211c0",
+			"name": "Request to OpenAI",
+			"func": "/*\n  Type: Create transcription\n  @param \"OPENAI_API_KEY\" {string} Required\n  @param \"file\" {file} Required\n  @param \"model\" {string} Required | Only \"whisper-1\" is currently available\n  @param \"prompt\" {string} Optional\n  @param \"response_format\" {string} Optional | Defaults to \"json\"\n  @param \"temperature\" {string} Optional | Defaults to 0\n  @param \"language\" {string} Optional\n*/\n\n/*\n  Type: Create translation\n  @param \"OPENAI_API_KEY\" {string} Required\n  @param \"file\" {file} Required\n  @param \"model\" {string} Required | Only \"whisper-1\" is currently available\n  @param \"prompt\" {string} Optional\n  @param \"response_format\" {string} Optional | Defaults to \"json\"\n  @param \"temperature\" {string} Optional | Defaults to 0\n*/\n\nconst actionType = msg.type || env.get(\"actionType\"); // \"transcriptions\" | \"translations\"\n\nif (!env.get(\"OPENAI_API_KEY\") && !msg.OPENAI_API_KEY) {\n  msg.payload = \"Enter OPENAI_API_KEY\";\n  node.status({ fill: \"red\", shape: \"dot\", text: \"disconnected\" });\n\n  return [null, msg];\n}\n\nconst baseRequestBody = {\n  file: msg.file,\n  model: \"whisper-1\",\n  prompt: msg.prompt,\n  response_format: msg.response_format,\n  temperature: msg.temperature\n}\n\nmsg.method = \"POST\";\nmsg.headers = {\n  'Content-Type': 'multipart/form-data',\n  'Authorization': `Bearer ${env.get(\"OPENAI_API_KEY\") || msg.OPENAI_API_KEY}`\n};\n\nif (actionType === \"transcriptions\") {\n  msg.url = `https://api.openai.com/v1/audio/transcriptions`;\n\n  msg.payload = {\n    ...baseRequestBody,\n    language: msg.language\n  };\n\n  reqStatus();\n\n  return [msg, null];\n}\n\nif (actionType === \"translations\") {\n  msg.url = `https://api.openai.com/v1/audio/translations`;\n\n  msg.payload = { ...baseRequestBody };\n\n  reqStatus();\n\n  return [msg, null];\n}\n\nmsg.payload = \"Invalid type\";\nnode.status({ fill: \"red\", shape: \"dot\", text: \"disconnected\" });\n\nfunction reqStatus() {\n  return node.status({ fill: \"blue\", shape: \"dot\", text: \"requesting\" });\n}\n\nreturn [null, msg];",
+			"outputs": 2,
+			"noerr": 0,
+			"initialize": "",
+			"finalize": "",
+			"libs": [],
+			"x": 350,
+			"y": 160,
+			"wires": [
+				[
+					"887d96a7616d4c54"
+				],
+				[]
+			]
+		},
+		{
+			"id": "887d96a7616d4c54",
+			"type": "http request",
+			"z": "70c990f5226211c0",
+			"name": "Open AI",
+			"method": "use",
+			"ret": "obj",
+			"paytoqs": "ignore",
+			"url": "",
+			"tls": "",
+			"persist": false,
+			"proxy": "",
+			"insecureHTTPParser": false,
+			"authType": "",
+			"senderr": false,
+			"headers": [],
+			"x": 540,
+			"y": 120,
+			"wires": [
+				[
+					"98bd7701e736895c"
+				]
+			]
+		},
+		{
+			"id": "d6b1390ae936e28f",
+			"type": "status",
+			"z": "70c990f5226211c0",
+			"name": "",
+			"scope": [
+				"83490fe977b3b046",
+				"98bd7701e736895c"
+			],
+			"x": 320,
+			"y": 240,
+			"wires": [
+				[]
+			]
+		},
+		{
+			"id": "98bd7701e736895c",
+			"type": "function",
+			"z": "70c990f5226211c0",
+			"name": "set status",
+			"func": "node.status({ fill: \"green\", shape: \"dot\", text: \"finished\" });\n\nreturn msg;",
+			"outputs": 1,
+			"noerr": 0,
+			"initialize": "",
+			"finalize": "",
+			"libs": [],
+			"x": 700,
+			"y": 120,
+			"wires": [
+				[]
+			]
+		}
+	]
+}
